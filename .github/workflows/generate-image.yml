@@ -58,8 +58,8 @@ jobs:
           COMMIT_MSG: ${{ needs.recup-last-commit.outputs.commit_message }}
         run: |
           mkdir -p images
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          FILENAME="commit_${TIMESTAMP}.jpeg"
+          SANITIZED=$(echo "$COMMIT_MSG" | sed 's/[^a-zA-Z0-9àâäéèêëïîôùûüÿçÀÂÄÉÈÊËÏÎÔÙÛÜŸÇ_ -]//g' | sed 's/  */_/g')
+          FILENAME="${SANITIZED}.jpeg"
           curl -s -L -o "images/${FILENAME}" "$IMAGE_URL"
           echo "${FILENAME}|${COMMIT_MSG}" > images/new_entry.txt
           ls -la images/
@@ -68,7 +68,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add images/
+          git add images/*.jpeg images/*.jpg images/*.png
           git commit -m "Ajout image générée [skip ci]"
           git push
 
