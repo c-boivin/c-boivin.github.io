@@ -56,7 +56,7 @@ jobs:
         run: |
           mkdir -p images
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          FILENAME="commit_${TIMESTAMP}.png"
+          FILENAME="commit_${TIMESTAMP}.jpeg"
           curl -s -L -o "images/${FILENAME}" "$IMAGE_URL"
           echo "${FILENAME}|${COMMIT_MSG}" > images/new_entry.txt
           ls -la images/
@@ -119,7 +119,7 @@ jobs:
             </style>
           </head>
           <body>
-            <h1>Galerie - Images generees par les commits</h1>
+            <h1>Galerie d'images</h1>
             <div class="gallery">
           EOF
 
