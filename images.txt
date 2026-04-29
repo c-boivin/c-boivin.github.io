@@ -4,3 +4,4 @@ commit_20260402_085335.jpeg|Un ours
 commit_20260402_102634.jpeg|Une souris
 Un_crabe.jpeg|Un crabe
 Une_abeille.jpeg|Une abeille
+Un_moustique.jpeg|Un moustique
