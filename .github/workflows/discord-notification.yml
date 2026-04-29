@@ -1,0 +1,58 @@
+name: Notification Discord avec URL dynamique
+
+on:
+  workflow_run:
+    workflows: ["Generate Image & Deploy"]
+    types:
+      - completed
+
+jobs:
+  send-discord:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Cloner le dépôt
+        uses: actions/checkout@v4
+
+      - name: Récupérer le message du dernier commit
+        id: get_commit_message
+        run: echo "MESSAGE=$(git log -1 --pretty=%B | head -1)" >> $GITHUB_ENV
+
+      - name: Télécharger l'artefact image
+        uses: actions/download-artifact@v4
+        with:
+          name: new-image
+          path: ./artifacts/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extraire le nom du fichier image
+        run: |
+          IMAGE_NAME=$(ls ./artifacts/*.jpeg ./artifacts/*.jpg ./artifacts/*.png 2>/dev/null | head -n 1 | xargs basename)
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "Fichier image trouvé : $IMAGE_NAME"
+
+      - name: Construire l'URL de l'image
+        run: |
+          IMAGE_URL="https://c-boivin.github.io/ex2_devops_ECV/${IMAGE_NAME}"
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_ENV
+          echo "URL de l'image : $IMAGE_URL"
+
+      - name: Envoyer la notification sur Discord
+        run: |
+          payload=$(jq -n \
+            --arg message "$MESSAGE" \
+            --arg image_url "$IMAGE_URL" \
+            '{
+              username: "GitHub BOT",
+              avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              embeds: [{
+                title: "Nouveau commit",
+                description: ("Le dernier commit est : " + $message),
+                color: 3066993,
+                image: { url: $image_url },
+                footer: { text: "GitHub Actions - Notification automatique" }
+              }]
+            }')
+          echo "Payload JSON: $payload"
+          curl -H "Content-Type: application/json" -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" -d "$payload"

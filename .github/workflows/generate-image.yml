@@ -36,7 +36,7 @@ jobs:
         env:
           COMMIT_MSG: ${{ needs.recup-last-commit.outputs.commit_message }}
         run: |
-          RESPONSE=$(curl -s -X POST "https://api.dynapictures.com/designs/2559d74afa" \
+          RESPONSE=$(curl -s -X POST "https://api.dynapictures.com/designs/6e901b4c13" \
             -H "Authorization: Bearer ${{ secrets.DYNAPICTURES }}" \
             -H "Content-Type: application/json" \
             -d "$(jq -n --arg msg "$COMMIT_MSG" '{params: [{name: "text1", text: $msg}]}')")
