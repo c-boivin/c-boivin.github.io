@@ -13,9 +13,10 @@ jobs:
     steps:
       - name: Cloner le dépôt
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Récupérer le message du dernier commit
-        id: get_commit_message
+      - name: Récupérer le message du commit original
         run: echo "MESSAGE=$(git log -1 --pretty=%B | head -1)" >> $GITHUB_ENV
 
       - name: Télécharger l'artefact image
@@ -34,7 +35,7 @@ jobs:
 
       - name: Construire l'URL de l'image
         run: |
-          IMAGE_URL="https://c-boivin.github.io/ex2_devops_ECV/${IMAGE_NAME}"
+          IMAGE_URL="https://c-boivin.github.io/${IMAGE_NAME}"
           echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_ENV
           echo "URL de l'image : $IMAGE_URL"
 
@@ -51,6 +52,10 @@ jobs:
                 description: ("Le dernier commit est : " + $message),
                 color: 3066993,
                 image: { url: $image_url },
+                fields: [{
+                  name: "Image générée",
+                  value: $image_url
+                }],
                 footer: { text: "GitHub Actions - Notification automatique" }
               }]
             }')
