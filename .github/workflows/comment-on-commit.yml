@@ -34,7 +34,7 @@ jobs:
 
       - name: 🔍 Récupérer dynamiquement le nom du fichier image
         run: |
-          IMAGE_NAME=$(ls ./artifacts/*.jpeg ./artifacts/*.jpg ./artifacts/*.png 2>/dev/null | head -n 1 | xargs basename)
+          IMAGE_NAME=$(cut -d'|' -f1 ./artifacts/new_entry.txt)
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "Fichier image trouvé : $IMAGE_NAME"
 
