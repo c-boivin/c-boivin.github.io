@@ -1,0 +1,57 @@
+name: Ajouter un Commentaire Automatique sur un Commit
+
+on:
+  workflow_run:
+    workflows: ["Generate Image & Deploy"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  comment-on-commit:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: 📥 Cloner le dépôt
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: 📝 Récupérer le message du dernier commit
+        run: echo "MESSAGE=$(git log -1 --pretty=%B | head -1)" >> $GITHUB_ENV
+
+      - name: 📦 Télécharger l'artefact image
+        uses: actions/download-artifact@v4
+        with:
+          name: new-image
+          path: ./artifacts/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔍 Récupérer dynamiquement le nom du fichier image
+        run: |
+          IMAGE_NAME=$(ls ./artifacts/*.jpeg ./artifacts/*.jpg ./artifacts/*.png 2>/dev/null | head -n 1 | xargs basename)
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "Fichier image trouvé : $IMAGE_NAME"
+
+      - name: 🔗 Construire l'URL de l'image
+        run: |
+          IMAGE_URL="https://raw.githubusercontent.com/${{ github.repository }}/main/images/${IMAGE_NAME}"
+          echo "IMAGE_URL=$IMAGE_URL" >> $GITHUB_ENV
+          echo "URL de l'image : $IMAGE_URL"
+
+      - name: 💬 Ajouter un commentaire sur le commit
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.repos.createCommitComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: '${{ github.event.workflow_run.head_sha }}',
+              body: `🚀 **Nouveau Commit Détecté !**\n\n📝 **Message du Commit :**\n${process.env.MESSAGE}\n\n🖼️ **Image Générée :**\n![Image générée](${process.env.IMAGE_URL})\n\n📢 _Ce commentaire est généré automatiquement par GitHub Actions._`
+            });
