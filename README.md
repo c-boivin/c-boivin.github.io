@@ -10,3 +10,5 @@
 ![Generate Image & Deploy](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/generate-image.yml/badge.svg)
 ![Notification Discord](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/discord-notification.yml/badge.svg)
 ![Commentaire Automatique sur Commit](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/comment-on-commit.yml/badge.svg)
+
+# 5 exercices de devops
