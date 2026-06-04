@@ -11,4 +11,4 @@
 ![Notification Discord](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/discord-notification.yml/badge.svg)
 ![Commentaire Automatique sur Commit](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/comment-on-commit.yml/badge.svg)
 
-# 5 exercices de devops
+## Nb : Le Workflow "Generate Image & Deploy" ne fonctionne plus car mon compte gratuit DynaPictures est bloqué.
