@@ -11,4 +11,4 @@
 ![Notification Discord](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/discord-notification.yml/badge.svg)
 ![Commentaire Automatique sur Commit](https://github.com/c-boivin/c-boivin.github.io/actions/workflows/comment-on-commit.yml/badge.svg)
 
-## Nb : Le Workflow "Generate Image & Deploy" ne fonctionne plus car mon compte gratuit DynaPictures est bloqué.
+## Nb : The "Generate Image & Deploy" workflow is no longer working because my free DynaPictures account has been suspended.
